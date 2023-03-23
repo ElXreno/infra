@@ -75,4 +75,10 @@ resource "azurerm_image" "nixos-x86_64-image" {
     os_state = "Generalized"
     blob_uri = azurerm_storage_blob.nixos-x86_64.id
   }
+
+  lifecycle {
+    ignore_changes = [
+      os_disk,
+    ]
+  }
 }
