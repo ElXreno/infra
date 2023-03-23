@@ -66,7 +66,7 @@
 
         devShells.default =
           let
-            terraform-with-plugins = (pkgs.terraform.withPlugins (p: with p; [ azurerm ]));
+            terraform-with-plugins = (pkgs.terraform.withPlugins (p: [ p.azurerm p.null ]));
             tf = (pkgs.writeShellScriptBin "tf" ''
               ${terraform-with-plugins}/bin/terraform -chdir="$TERRAFORM_DIR" $@
             '');

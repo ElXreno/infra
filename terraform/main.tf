@@ -4,6 +4,11 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.48.0"
     }
+
+    null = {
+      source  = "hashicorp/null"
+      version = "3.2.1"
+    }
   }
 
   backend "azurerm" {
@@ -44,12 +49,19 @@ resource "azurerm_storage_container" "nixos" {
   container_access_type = "private"
 }
 
+resource "null_resource" "prepare-nixos-x86_64-image" {
+  provisioner "local-exec" {
+    command = "nix build ../.#packages.x86_64-linux.azure-image -o nixos-x86_64"
+  }
+}
+
 resource "azurerm_storage_blob" "nixos-x86_64" {
   name                   = "nixos-x86_64.vhd"
   storage_account_name   = azurerm_storage_account.nixos.name
   storage_container_name = azurerm_storage_container.nixos.name
   type                   = "Page"
-  source                 = "../result/disk.vhd"
+  source                 = "./nixos-x86_64/disk.vhd"
+  depends_on             = [null_resource.prepare-nixos-x86_64-image]
 }
 
 resource "azurerm_image" "nixos-x86_64-image" {
