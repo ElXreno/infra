@@ -50,3 +50,7 @@ resource "azurerm_linux_virtual_machine" "akina" {
 
   source_image_id = azurerm_image.nixos-x86_64-image.id
 }
+
+output "akina_ipv4" {
+  value = azurerm_public_ip.akina.ip_address
+}
