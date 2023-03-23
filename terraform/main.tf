@@ -39,6 +39,7 @@ resource "azurerm_storage_account" "nixos" {
   name                     = "nixosstorage"
   resource_group_name      = azurerm_resource_group.nixos.name
   location                 = azurerm_resource_group.nixos.location
+  access_tier              = "Cool"
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
