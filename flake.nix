@@ -64,17 +64,24 @@
           }).config.system.build.azureImage;
         };
 
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs;
-            let
-              terraform-with-plugins = terraform.withPlugins (p: with p; [ azurerm ]);
-            in
-            [
-              terraform-with-plugins
-
+        devShells.default =
+          let
+            terraform-with-plugins = (pkgs.terraform.withPlugins (p: with p; [ azurerm ]));
+            tf = (pkgs.writeShellScriptBin "tf" ''
+              ${terraform-with-plugins}/bin/terraform -chdir="$TERRAFORM_DIR" $@
+            '');
+          in
+          pkgs.mkShell {
+            buildInputs = with pkgs; [
               azure-cli
+              tf
             ];
-        };
+
+            shellHook = ''
+              export TOP_LEVEL_DIR=$(${pkgs.git}/bin/git rev-parse --show-toplevel)
+              export TERRAFORM_DIR="$TOP_LEVEL_DIR/terraform"
+            '';
+          };
       }
     );
 }
