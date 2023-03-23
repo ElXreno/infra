@@ -2,7 +2,7 @@
 {
   nix = {
     settings = {
-      trusted-users = [ "elxreno" ];
+      trusted-users = [ "root" "@wheel" ];
 
       extra-substituters = [
         "https://elxreno.cachix.org"
