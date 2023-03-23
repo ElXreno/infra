@@ -1,0 +1,5 @@
+.direnv
+.terraform
+.terraform.lock.hcl
+terraform.tfstate*
+result
